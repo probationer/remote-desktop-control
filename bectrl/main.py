@@ -9,10 +9,10 @@ import pyautogui as ag
 import mouse
 from _keyboard import getKeycodeMapping
 
-# 画面周期
+# picture period
 IDLE = 0.05
 
-# 鼠标滚轮灵敏度
+# Mouse wheel sensitivity
 SCROLL_NUM = 5
 
 bufsize = 1024
