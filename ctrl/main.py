@@ -2,6 +2,7 @@ import tkinter
 import tkinter.messagebox
 import struct
 import socket
+import websocket
 import numpy as np
 from PIL import Image, ImageTk
 import threading
@@ -50,6 +51,7 @@ elif platform.system() == "Linux":
     PLAT = b'x11'
 
 # initialize socket
+'''
 def SetSocket():
     global soc, host_en
 
@@ -63,6 +65,7 @@ def SetSocket():
         d += host.encode()
         d += struct.pack(">H", port)
         return d
+
     host = host_en.get()
     if host is None:
         tkinter.messagebox.showinfo('hint', 'Host Setting Error')
@@ -78,7 +81,7 @@ def SetSocket():
             return
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((ss[0], int(ss[1])))
-        soc.sendall(struct.pack(">BB", 5, 0))
+        soc.send(struct.pack(">BB", 5, 0))
         recv = soc.recv(2)
         if recv[1] != 0:
             tkinter.messagebox.showinfo('hint', 'The agent responded with an error!')
@@ -86,13 +89,13 @@ def SetSocket():
         if re.match(r'^\d+?\.\d+?\.\d+?\.\d+?:\d+$', host) is None:
             # host Domain name access
             hand = byhost(hs[0], int(hs[1]))
-            soc.sendall(hand)
+            soc.send(hand)
         else:
             # host ip access
             ip = [int(i) for i in hs[0].split(".")]
             port = int(hs[1])
             hand = byipv4(ip, port)
-            soc.sendall(hand)
+            soc.send(hand)
         # Proxy response
         rcv = b''
         while len(rcv) != 10:
@@ -103,7 +106,7 @@ def SetSocket():
     else:
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         soc.connect((hs[0], int(hs[1])))
-
+'''
 
 def SetScale(x):
     global scale, wscale
@@ -171,9 +174,9 @@ def BindEvents(canvas):
     handle events
     '''
     def EventDo(data):
-        soc.sendall(data)
+        soc.send(str(data))
+        
     # left mouse button
-
     def LeftDown(e):
         return EventDo(struct.pack('>BBHH', 1, 100, int(e.x/scale), int(e.y/scale)))
 
@@ -228,21 +231,28 @@ def BindEvents(canvas):
     canvas.bind(sequence="<KeyPress>", func=KeyDown)
     canvas.bind(sequence="<KeyRelease>", func=KeyUp)
 
+def SetSocket():
+    
+    websocket.enableTrace(True)
+
+    soc = websocket.WebSocket()
+    soc.connect("wss://e9opf21h1c.execute-api.ap-south-1.amazonaws.com/production")
+    # print(soc.recv())
 
 def run():
     global wscale, fixh, fixw, soc, showcan
     SetSocket()
     # Send platform information
-    soc.sendall(PLAT)
-    lenb = soc.recv(5)
+    soc.send(PLAT)
+    lenb = soc.recv() #soc.recv(5)
     imtype, le = struct.unpack(">BI", lenb)
     imb = b''
     while le > bufsize:
-        t = soc.recv(bufsize)
+        t = soc.recv() #soc.recv(bufsize)
         imb += t
         le -= len(t)
-    while le > 0:
-        t = soc.recv(le)
+    while le > 0: 
+        t = soc.recv() # soc.recv(le)
         imb += t
         le -= len(t)
     data = np.frombuffer(imb, dtype=np.uint8)
@@ -266,15 +276,15 @@ def run():
             cv.config(width=w, height=h)
             wscale = False
         try:
-            lenb = soc.recv(5)
+            lenb = soc.recv() #soc.recv(5)
             imtype, le = struct.unpack(">BI", lenb)
             imb = b''
             while le > bufsize:
-                t = soc.recv(bufsize)
+                t = soc.recv() #soc.recv(bufsize)
                 imb += t
                 le -= len(t)
             while le > 0:
-                t = soc.recv(le)
+                t = soc.recv() # soc.recv(le)
                 imb += t
                 le -= len(t)
             data = np.frombuffer(imb, dtype=np.uint8)

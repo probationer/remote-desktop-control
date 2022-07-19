@@ -1,5 +1,6 @@
 import struct
 import socket
+import websocket
 from PIL import ImageGrab
 from cv2 import cv2
 import numpy as np
@@ -8,6 +9,7 @@ import time
 import pyautogui as ag
 import mouse
 from _keyboard import getKeycodeMapping
+import json
 
 # picture period
 IDLE = 0.05
@@ -17,10 +19,9 @@ SCROLL_NUM = 5
 
 bufsize = 1024
 
-host = ('0.0.0.0', 80)
-soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-soc.bind(host)
-soc.listen(1)
+# print(ws.recv())
+
+
 # Compression ratio 1-100 The smaller the value, 
 # the higher the compression ratio and the more serious 
 # the loss of image quality.
@@ -29,7 +30,6 @@ IMQUALITY = 50
 lock = threading.Lock()
 
 # if sys.platform == "win32":
-#     from ._keyboard_win import keycodeMapping
 # elif platform.system() == "Linux":
 #     from ._keyboard_x11 import keycodeMapping
 # elif sys.platform == "darwin":
@@ -40,6 +40,7 @@ def ctrl(conn):
     '''
     Read control commands and restore operations locally
     '''
+    print(conn.recv())
     keycodeMapping = {}
     def Op(key, op, ox, oy):
         # print(key, op, ox, oy)
@@ -79,7 +80,7 @@ def ctrl(conn):
     try:
         plat = b''
         while True:
-            plat += conn.recv(3-len(plat))
+            plat += conn.recv() #conn.recv(3-len(plat))
             if len(plat) == 3:
                 break
         print("Plat:", plat.decode())
@@ -89,7 +90,7 @@ def ctrl(conn):
             cmd = b''
             rest = base_len - 0
             while rest > 0:
-                cmd += conn.recv(rest)
+                cmd += conn.recv() #conn.recv(rest)
                 rest -= len(cmd)
             key = cmd[0]
             op = cmd[1]
@@ -99,6 +100,14 @@ def ctrl(conn):
     except:
         return
 
+
+def ctrl_mouse(conn):
+    # mouse movement
+    event = json.loads(conn.recv())
+    coordinates = event.get('coordinates', '' )
+    ox = coordinates.get('x')
+    oy = coordinates.get('y')
+    mouse.move(ox, oy)
 
 # compressed np image
 img = None
@@ -117,8 +126,12 @@ def handle(conn):
         img = cv2.imdecode(imnp, cv2.IMREAD_COLOR)
     lock.release()
     lenb = struct.pack(">BI", 1, len(imbyt))
-    conn.sendall(lenb)
-    conn.sendall(imbyt)
+    print('lenb', lenb)
+    print("lenb unicode:", lenb.decode('unicode_escape'))
+    # print("lenb unicode decode:", lenb.decode('unicode_escape').encode('unicode_escape'))
+    conn.send(lenb.decode('unicode_escape'))
+    conn.send(imbyt)
+    print(conn.recv())
     while True:
         # fix for linux
         time.sleep(IDLE)
@@ -144,16 +157,25 @@ def handle(conn):
         if l1 > l2:
             # transmit differentiated images
             lenb = struct.pack(">BI", 0, l2)
-            conn.sendall(lenb)
-            conn.sendall(imb)
+            conn.send(lenb.decode('unicode_escape'))
+            conn.send(imb.decode('unicode_escape'))
         else:
             # Pass the original encoded image
             lenb = struct.pack(">BI", 1, l1)
-            conn.sendall(lenb)
-            conn.sendall(imbyt)
+            conn.send(lenb.decode('unicode_escape'))
+            conn.send(imbyt.decode('unicode_escape'))
 
+websocket.enableTrace(True)
+ws = websocket.WebSocket()
+ws.connect("wss://e9opf21h1c.execute-api.ap-south-1.amazonaws.com/production")
+ws.send(json.dumps({"action": "$connect", "client_type": "presenter"}))
+print(ws.recv())
 
 while True:
-    conn, addr = soc.accept()
-    # threading.Thread(target=handle, args=(conn,)).start()
-    threading.Thread(target=ctrl, args=(conn,)).start()
+    try: 
+        # threading.Thread(target=handle, args=(ws,)).start()
+        # print(ws.recv())
+        threading.Thread(target=ctrl_mouse, args=(ws,)).start()
+    except Exception as er:
+        print('ER : ', er)
+
