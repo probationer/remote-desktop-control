@@ -107,7 +107,7 @@ def ctrl_mouse(conn):
     coordinates = event.get('coordinates', '' )
     ox = coordinates.get('x')
     oy = coordinates.get('y')
-    mouse.move(ox, oy)
+    mouse.move(ox, oy, absolute=False, duration=0.1)
 
 # compressed np image
 img = None

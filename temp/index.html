@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2018 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+
+<head>
+
+    <style>
+        img {
+            pointer-events: none;
+            /* doing this makes sure .elementFromPoint
+			do not acquires the image cursor object */
+            position: absolute;
+        }
+
+        /* makes the cursor invisible */
+
+        * {
+            cursor: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <img id="cursor" src="https://media.geeksforgeeks.org/wp-content/uploads/20200319212118/cursor2.png" width="15"
+        height="20" />
+
+    <video id="gum-local" autoplay playsinline muted></video>
+    <button id="startButton" disabled>Start</button>
+
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="sender.js"></script>
+</body>
+
+</html>
