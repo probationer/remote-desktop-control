@@ -1,0 +1,23 @@
+{
+    "requestContext": {
+        "routeKey": "$default",
+        "messageId": "XLSSjf8aBcwCFSA=",
+        "eventType": "MESSAGE",
+        "extendedRequestId": "XLSSkHNeBcwFT-w=",
+        "requestTime": "20/Aug/2022:19:07:09 +0000",
+        "messageDirection": "IN",
+        "stage": "dev",
+        "connectedAt": 1661022421970,
+        "requestTimeEpoch": 1661022429000,
+        "identity": {
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+            "sourceIp": "49.36.144.46"
+        },
+        "requestId": "XLSSkHNeBcwFT-w=",
+        "domainName": "ohm8v11s16.execute-api.ap-south-1.amazonaws.com",
+        "connectionId": "XLSRdf8TBcwCFSA=",
+        "apiId": "ohm8v11s16"
+    },
+    "body": "{\"identifer\":\"101\",\"user_type\":\"sender\",\"type\":\"send_message\",\"offer\":{\"type\":\"offer\",\"sdp\":\"v=0\\r\\no=- 313215817470062461 2 IN IP4 127.0.0.1\\r\\ns=-\\r\\nt=0 0\\r\\na=extmap-allow-mixed\\r\\na=msid-semantic: WMS\\r\\n\"}}",
+    "isBase64Encoded": false
+}

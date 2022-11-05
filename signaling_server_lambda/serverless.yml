@@ -1,0 +1,44 @@
+service: webRemote-desktop
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-south-1
+  websocketsApiName: websocket-api
+  websocketsApiRouteSelectionExpression: $request.body.action # custom routes are selected by the value of the action property in the body
+  websocketsDescription: Service for websocket apis
+  stage: dev
+
+functions:
+  connectionHandler:
+    handler: connection.handler
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+  signalingServer:
+    handler: signaling_server.handler
+    role: lambdaDynamoPermission
+    events:
+      - websocket: $default #simple event definition without extra route property
+
+
+resources: 
+  Resources:
+    lambdaDynamoPermission:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: signaling_server_dynamo_permission
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+          - arn:aws:iam::aws:policy/CloudWatchFullAccess
+          - arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess

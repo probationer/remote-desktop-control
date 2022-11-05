@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+      <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
+      <title>Patron</title>
+      <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'none'"> -->
+      <link rel="stylesheet" href="index.css">
+   </head>
+   <body>
+     <div class="main-container">  
+      <div class="cards">
+             <!-- <video id="localDisplay" autoplay playsinline muted style="border:1px solid black ; background: black;" width="400"
+            height="200"></video> -->
+         <div>   
+         <h3 class="app-heading">Connect To Your Peer</h3>  
+         <div class="cards-item">
+            <div class="card-content">
+               <h3>Enter Your remote Connection Id</h3>
+                  <div class="input">
+                     <input class="input-box" id="connId" type="text" value="111">
+                     <button class="btn" id="setConnId" >Connect</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      </div>
+     </div>  
+   </body>
+   <script type="text/javascript" src="./index.js"></script>
+   <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+</html>

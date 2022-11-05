@@ -1,0 +1,68 @@
+body {
+    color: #272727;
+    font-family: Arial, sans-serif;
+    font-style: normal;
+    letter-spacing: 0;
+    padding: 5rem;
+  }
+  .main-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    background:#93B5C6;
+    box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
+    border-radius: 0.25rem;
+    padding:1rem 0rem 2.5rem 0rem;
+    font-size: 14px;
+  }
+  
+  .cards {
+    display: flex;
+    border-radius: 0.25rem;
+    font-size: 14px;
+  }
+  
+  .app-heading{
+    color:#053742;
+  }
+  .cards-item {
+    display: flex;
+    padding: 1rem 1rem 1rem 1rem;
+    background-color: #EEF4FF;
+    border-radius: 0.25rem;
+    box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
+    flex-direction: row;
+    overflow: hidden;
+  }
+  
+  .input-box{
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-repeat: no-repeat;
+    padding: 6px 20px 10px 6px;
+    transition: width 0.4s ease-in-out;
+  }
+  
+  .btn {
+    color: #ffffff;
+    padding: 0.8rem;
+    text-transform: uppercase;
+    border-radius: 4px;
+    font-weight: 400;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #053742; 
+    margin-top: 1.25rem;   
+  }
+  .btn:hover {
+    background-color: #053742;
+    border-color:#275EFE;
+  }
+  
+  
